@@ -13,6 +13,8 @@ and the Flutter guide for
 
 A library for connecting to and querying PostgreSQL databases.
 
+This package for the moment only adds an abstraction layer to the [postgres](https://link-url-here.org) package, on which it is based, so you don't have to build the sql query manually.
+
 ## Features
 
 TODO: List what your package can do. Maybe include images, gifs, or videos.
