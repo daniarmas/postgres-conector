@@ -1,6 +1,12 @@
 import 'package:postgres_conector/postgres_conector.dart';
 
-void main() {
-  var awesome = Awesome();
-  print('awesome: ${awesome.isAwesome}');
+void main() async {
+  final _connection = PostgresqlDao(
+    host: '127.0.0.1',
+    port: 5432,
+    database: 'postgres',
+    username: 'postgres',
+    password: 'postgres',
+  );
+  await _connection.connect();
 }
