@@ -1,0 +1,20 @@
+name: postgres_conector
+description: A starting point for Dart libraries or applications.
+version: 1.0.0
+# homepage: https://www.example.com
+
+environment:
+  sdk: '>=2.13.4 <3.0.0'
+
+
+dependencies:
+  path: ^1.8.0
+  postgres: ^2.4.0
+  uuid: ^3.0.4
+
+dev_dependencies:
+  # dart run build_runner build
+  build_runner: ^2.0.5
+  lints: ^1.0.1
+  mockito: ^5.0.10
+  test: ^1.17.9
