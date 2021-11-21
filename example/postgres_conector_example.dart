@@ -2,7 +2,7 @@ import 'package:postgres_conector/postgres_conector.dart';
 
 void main() async {
   final _connection = PostgresqlDao(
-    host: '127.0.0.1',
+    masterHost: '127.0.0.1',
     port: 5432,
     database: 'postgres',
     username: 'postgres',

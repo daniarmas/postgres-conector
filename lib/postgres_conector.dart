@@ -23,6 +23,9 @@ export 'src/where_normal_attribute_higher.dart' show WhereNormalAttributeHigher;
 export 'src/where_normal_attribute_in.dart' show WhereNormalAttributeIn;
 export 'src/where_normal_attribute_not_in.dart' show WhereNormalAttributeNotIn;
 export 'src/where_search.dart' show WhereNormalSearch;
+export 'src/order_by_asc.dart';
+export 'src/order_by_desc.dart';
+export 'src/order_by.dart';
 
 
 // TODO: Export any libraries intended for clients of this package.

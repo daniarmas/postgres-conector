@@ -1,4 +1,5 @@
 import 'package:postgres_conector/postgres_conector.dart';
+import 'package:postgres_conector/src/parse_order_by.dart';
 
 String constructSqlQuerySearch({
   required String table,
@@ -7,7 +8,7 @@ String constructSqlQuerySearch({
   List<String>? agregationAttributes,
   InnerJoin? innerJoin,
   int? limit,
-  String? orderByAsc,
+  OrderBy? orderBy,
 }) {
   // Attributes
   String attributesResult =
@@ -30,8 +31,7 @@ String constructSqlQuerySearch({
   // InnerJoin
   String innerJoinResult = (innerJoin != null) ? '$innerJoin' : '';
   // OrderBy
-  String orderByAscResult =
-      orderByAsc != null ? 'ORDER BY $orderByAsc ASC ' : '';
+  String orderByAscResult = parseOrderBy(orderBy);
   // Limit
   String limitResult = limit != null ? 'LIMIT $limit;' : '';
   return 'SELECT $attributesResult '

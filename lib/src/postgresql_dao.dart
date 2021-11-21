@@ -5,30 +5,45 @@ import 'package:postgres_conector/src/construct_sql_query_search.dart';
 import 'package:postgres_conector/src/construct_sql_query_select.dart';
 import 'package:postgres_conector/src/construct_sql_query_update.dart';
 import 'package:postgres_conector/postgres_conector.dart';
+import 'package:postgres_conector/src/order_by.dart';
 
 class PostgresqlDao {
-  final String host;
+  final String masterHost;
+  final String? slaveHost;
   final int port;
   final String database;
   final String username;
   final String password;
-  late PostgreSQLConnection _connection;
+  late PostgreSQLConnection _masterConnection;
+  late PostgreSQLConnection _slaveConnection;
 
   PostgresqlDao({
-    required this.host,
+    required this.masterHost,
     required this.port,
     required this.database,
     required this.username,
     required this.password,
+    this.slaveHost,
   });
 
   Future<bool> connect() async {
     try {
-      _connection = PostgreSQLConnection(host, port, database,
+      _masterConnection = PostgreSQLConnection(masterHost, port, database,
           username: username, password: password);
-      await _connection.open().then((value) async {
-        print('🚀 Database Server is on...');
+      await _masterConnection.open().then((value) async {
+        if (slaveHost != null && slaveHost != '') {
+          print('🚀 Database master connection is on...');
+        } else {
+          print('🚀 Database connection is on...');
+        }
       });
+      if (slaveHost != null && slaveHost != '') {
+        _slaveConnection = PostgreSQLConnection(slaveHost!, port, database,
+            username: username, password: password);
+        await _slaveConnection.open().then((value) async {
+          print('🚀 Database slave connection is on...');
+        });
+      }
       return Future.value(true);
     } catch (error) {
       throw Exception(error);
@@ -37,7 +52,7 @@ class PostgresqlDao {
 
   Future<PostgreSQLConnection> getConnection() async {
     try {
-      return _connection;
+      return _masterConnection;
     } catch (error) {
       throw Exception(error);
     }
@@ -45,9 +60,10 @@ class PostgresqlDao {
 
   void close() async {
     try {
-      _connection = PostgreSQLConnection(host, port, database,
-          username: username, password: password);
-      await _connection.close();
+      await _masterConnection.close();
+      if (slaveHost != null && slaveHost != '') {
+        await _slaveConnection.close();
+      }
     } catch (error) {
       throw Exception(error);
     }
@@ -120,7 +136,7 @@ class PostgresqlDao {
       List<String>? agregationAttributes,
       int? limit,
       List<Where>? where,
-      String? orderByAsc}) async {
+      OrderBy? orderBy}) async {
     try {
       List<Map<String, dynamic>> response = [];
       String? query = constructSqlQuerySelect(
@@ -130,7 +146,7 @@ class PostgresqlDao {
           attributes: attributes,
           agregationAttributes: agregationAttributes,
           innerJoin: innerJoin,
-          orderByAsc: orderByAsc);
+          orderBy: orderBy);
       print(query);
       var result = await context.mappedResultsQuery(query);
       for (var item in result) {
@@ -150,7 +166,7 @@ class PostgresqlDao {
     InnerJoin? innerJoin,
     List<String>? agregationAttributes,
     int? limit,
-    String? orderByAsc,
+    OrderBy? orderBy,
   }) async {
     try {
       List<Map<String, dynamic>> response = [];
@@ -161,7 +177,7 @@ class PostgresqlDao {
           attributes: attributes,
           innerJoin: innerJoin,
           agregationAttributes: agregationAttributes,
-          orderByAsc: orderByAsc);
+          orderBy: orderBy);
       print(query);
       var result = await context.mappedResultsQuery(query);
       for (var item in result) {
